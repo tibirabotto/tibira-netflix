@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { UserAuth } from "../context/AuthContext";
 import { db } from "../firebase";
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
-function Movie({ item }) {
+import { arrayUnion, doc, updateDoc, onSnapshot } from "firebase/firestore";
+
+const Movie = ({ item }) => {
   const [like, setLike] = useState(false);
   const [saved, setSaved] = useState(false);
   const { user } = UserAuth();
+
   const movieID = doc(db, "users", `${user?.email}`);
 
   const saveShow = async () => {
@@ -46,6 +48,6 @@ function Movie({ item }) {
       </div>
     </div>
   );
-}
+};
 
 export default Movie;
