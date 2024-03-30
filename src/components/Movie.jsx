@@ -6,22 +6,51 @@ import { arrayUnion, doc, updateDoc, onSnapshot } from "firebase/firestore";
 
 const Movie = ({ item }) => {
   const [like, setLike] = useState(false);
+  const [movies, setMovies] = useState([]);
   const [saved, setSaved] = useState(false);
   const { user } = UserAuth();
 
   const movieID = doc(db, "users", `${user?.email}`);
 
+  useEffect(() => {
+    onSnapshot(doc(db, "users", `${user?.email}`), (doc) => {
+      doc.data()?.savedShows.map((e) => {
+        if (e.id === item.id) {
+          setLike(true);
+        }
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    onSnapshot(doc(db, "users", `${user?.email}`), (doc) => {
+      setMovies(doc.data()?.savedShows);
+    });
+  }, [user?.email]);
+
   const saveShow = async () => {
     if (user?.email) {
-      setLike(!like);
-      setSaved(true);
-      await updateDoc(movieID, {
-        savedShows: arrayUnion({
-          id: item.id,
-          title: item.title,
-          img: item.backdrop_path,
-        }),
-      });
+      if (like) {
+        try {
+          setLike(false);
+          const results = movies.filter((e) => e.id !== item.id);
+          await updateDoc(movieID, {
+            savedShows: results,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        setLike(true);
+        setSaved(true);
+        await updateDoc(movieID, {
+          savedShows: arrayUnion({
+            id: item.id,
+            title: item.title,
+            img: item.backdrop_path,
+          }),
+        });
+      }
     } else {
       alert("Please log in to save a movie");
     }
