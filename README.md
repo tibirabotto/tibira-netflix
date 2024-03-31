@@ -1,4 +1,4 @@
-![Untitled design](https://github.com/tibirabotto/tibira-netflix/blob/main/public/tibiraflix.gif)
+![Untitled design](https://github.com/tibirabotto/tibira-netflix/blob/main/public/tibiraflix_gif.gif)
 
 # Build A React JS Website Styled With Tailwind CSS
 
